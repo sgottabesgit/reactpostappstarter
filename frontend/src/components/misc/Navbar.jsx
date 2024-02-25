@@ -4,6 +4,7 @@ import { MantineLogo } from "@mantine/ds";
 import { Container, Group, Burger, Drawer, Stack } from "@mantine/core";
 import useLinks from "./useLinks";
 import { DrawerContext } from "../../Contexts/drawerContext";
+import SVGComponent from "./svgviewer-react-output";
 
 const Navbar = () => {
   const { opened, toggle } = React.useContext(DrawerContext);
@@ -12,7 +13,7 @@ const Navbar = () => {
   return (
     <header className={classes.header}>
       <Container size="md" className={classes.inner}>
-        <MantineLogo size={28} />
+        <SVGComponent />
         <Group gap={5} visibleFrom="xs">
           {items}
         </Group>
