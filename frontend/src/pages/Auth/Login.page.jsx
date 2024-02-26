@@ -13,7 +13,7 @@ import {
   Group,
   Button,
 } from '@mantine/core';
-import classes from './AuthenticationTitle.module.css';
+import classes from './Login.page.module.css';
 
 const LoginPage = () => {
   const navigate = useNavigate();
