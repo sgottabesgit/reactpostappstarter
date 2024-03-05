@@ -30,8 +30,13 @@ const LoginPage = () => {
     let email = e.target.email?.value;
     let password = e.target.password?.value;
     if (!email || !password) return;
-    loginService(email, password);
+
+    // Call the loginService function to authenticate the user
+    await loginService(email, password);
+
+    // The loginService function should handle state updates and redirection
   };
+
   return (
     <Container size={420} my={40}>
       <Title ta="center" className={classes.title}>
@@ -45,17 +50,19 @@ const LoginPage = () => {
       </Text>
 
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-        <TextInput label="Email" placeholder="you@mantine.dev" required />
-        <PasswordInput label="Password" placeholder="Your password" required mt="md" />
-        <Group justify="space-between" mt="lg">
-          <Checkbox label="Remember me" />
-          <Anchor component="button" size="sm">
-            Forgot password?
-          </Anchor>
-        </Group>
-        <Button fullWidth mt="xl">
-          Sign in
-        </Button>
+        <form onSubmit={onLogin}>
+          <TextInput name="email" label="Email" placeholder="you@mantine.dev" required />
+          <PasswordInput name="password" label="Password" placeholder="Your password" required mt="md" />
+          <Group justify="space-between" mt="lg">
+            <Checkbox label="Remember me" />
+            <Anchor component="button" size="sm">
+              Forgot password?
+            </Anchor>
+          </Group>
+          <Button type="submit" fullWidth mt="xl">
+            Sign in
+          </Button>
+        </form>
       </Paper>
     </Container>
   );
