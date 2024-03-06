@@ -50,8 +50,14 @@ app.get("/api/posts", async (req, res) => {
 // ⭐️ TODO: Implement this yourself
 app.get("/api/posts/:id", (req, res) => {
   const id = req.params.id;
-  // The line below should be fixed.
-  res.json(posts[0]);
+  const post = posts.find((post) => post.id === parseInt(id));
+
+  if (!post) {
+    // Handle the case where the requested post ID is not found
+    res.status(404).json({ error: "Post not found" });
+  } else {
+    res.json(post);
+  }
 });
 
 /**
