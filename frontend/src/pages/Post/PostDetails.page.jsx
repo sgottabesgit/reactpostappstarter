@@ -1,13 +1,24 @@
-import { Link } from "react-router-dom";
-import DOMAIN from "../../services/endpoint";
-import axios from "axios";
-import { Button, Container } from "@mantine/core";
+import { Link } from 'react-router-dom';
+import { Button, Container } from '@mantine/core';
+import './PostDetails.css'; // Import your CSS file
 
 function PostDetailsPage() {
   return (
     <>
-      <Container>
-        <p>This page shows post details!</p>
+      <Container className="post-details-container">
+        <div className="post-details-left">
+          <p>Author: John123</p>
+          <p>Title: Beautiful Sunset</p>
+          <p>Category: Nature</p>
+          <p>Content: Lorem ipsum dolor sit amet...</p>
+        </div>
+        <div className="post-details-right">
+          <img
+            src="https://example.com/path/to/image.jpg"
+            alt="Post Image"
+            className="post-image"
+          />
+        </div>
         <Button>
           <Link to="/posts">Back to Posts</Link>
         </Button>
