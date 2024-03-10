@@ -1,4 +1,7 @@
+// fakedb.ts
+
 import { Response } from "express";
+import jwt from "jsonwebtoken";
 
 export interface IDecodedUser {
   id: number;
@@ -31,18 +34,14 @@ export const posts = [
   },
 ];
 
-let nextPostId = 3;
-
 export const addPost = (post: any, userId: number) => {
-  post.id = nextPostId++;
+  post.id = posts.length + 1;
   post.userId = userId;
   posts.push(post);
 };
 
 export const verifyUser = (email: string, password: string) => {
-  const user = users.find((user) => {
-    return user.email === email && user.password === password;
-  });
+  const user = users.find((user) => user.email === email && user.password === password);
   if (!user) throw new Error("User not found");
   return user;
 };
@@ -56,9 +55,23 @@ export const findUserById = (id: number) => {
 export const parseToken = (authHeader: string | undefined, res: Response) => {
   if (!authHeader) {
     res.status(403).send("Header does not exist");
-    return "";
+    return null;
   }
-  return authHeader.split(" ")[1];
+
+  const token = authHeader.split(" ")[1];
+
+  if (!token) {
+    res.status(403).send("Token not provided");
+    return null;
+  }
+
+  try {
+    const decodedUser = jwt.verify(token, "secret");
+    return { token, userId: (decodedUser as IDecodedUser).id };
+  } catch (error) {
+    res.status(401).json({ error: "Invalid token" });
+    return null;
+  }
 };
 
 export const sleep = (ms: number) => {

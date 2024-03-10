@@ -1,3 +1,5 @@
+// backend/app.ts
+
 import express from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
@@ -16,7 +18,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// TODO: Obviously use a more secure signing key than "secret"
 app.post("/api/user/login", (req, res) => {
   try {
     const { email, password } = req.body;
@@ -33,17 +34,22 @@ app.post("/api/user/login", (req, res) => {
 app.post("/api/user/validation", (req, res) => {
   try {
     const authHeader = req.headers.authorization;
-    const token = parseToken(authHeader, res);
-    const decodedUser = jwt.verify(token, "secret");
-    const user = findUserById((decodedUser as IDecodedUser).id);
-    res.json({ result: { user, token } });
+    const tokenAndUserId = parseToken(authHeader, res);
+
+    if (!tokenAndUserId) {
+      return;
+    }
+
+    const { userId } = tokenAndUserId;
+    const user = findUserById(userId);
+
+    res.json({ result: { user, token: tokenAndUserId.token } });
   } catch (error) {
     res.status(401).json({ error });
   }
 });
 
 app.get("/api/posts", async (req, res) => {
-  // Sleep delay goes here
   res.json(posts);
 });
 
@@ -60,26 +66,15 @@ app.get("/api/posts/:id", (req, res) => {
 
 app.post("/api/posts", (req, res) => {
   const incomingPost = req.body;
+  const tokenAndUserId = parseToken(req.headers.authorization, res);
 
-  // Extract user ID from the token
-  const authHeader = req.headers.authorization;
-  const token = parseToken(authHeader, res);
-
-  if (!token) {
-    res.status(401).json({ error: "Unauthorized" });
+  if (!tokenAndUserId) {
     return;
   }
 
-  try {
-    const decodedUser = jwt.verify(token, "secret");
-    const userId = (decodedUser as IDecodedUser).id;
-
-    // Now you have the user ID, you can use it to add the post
-    addPost(incomingPost, userId);
-    res.status(200).json({ success: true });
-  } catch (error) {
-    res.status(401).json({ error: "Invalid token" });
-  }
+  const { userId } = tokenAndUserId;
+  addPost(incomingPost, userId);
+  res.status(200).json({ success: true });
 });
 
 app.listen(port, () => console.log("Server is running"));
