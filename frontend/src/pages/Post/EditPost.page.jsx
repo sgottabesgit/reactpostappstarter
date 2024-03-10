@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Container, TextInput, Button } from '@mantine/core';
+import { Container, TextInput, Textarea, Button } from '@mantine/core';
 
 function EditPostPage() {
     const { id } = useParams();
@@ -12,19 +12,14 @@ function EditPostPage() {
         title: '',
         category: '',
         content: '',
-        authorEmail: '', // Assuming this currently holds the author's email
-        tags: '',
+        // Add other fields as needed
     });
 
     useEffect(() => {
         const fetchPostDetails = async () => {
             try {
                 const response = await axios.get(`http://localhost:8085/api/posts/${id}`);
-                const truncatedEmail = response.data.authorEmail.split('@')[0]; // Extract name before '@'
-                setPost({
-                    ...response.data,
-                    authorEmail: truncatedEmail,
-                });
+                setPost(response.data);
             } catch (error) {
                 console.error('Error fetching post details:', error);
             }
@@ -55,22 +50,12 @@ function EditPostPage() {
                 value={post.category}
                 onChange={(event) => setPost({ ...post, category: event.target.value })}
             />
-            <TextInput
+            <Textarea
                 label="Content"
                 value={post.content}
                 onChange={(event) => setPost({ ...post, content: event.target.value })}
             />
-            <TextInput
-                label="Author"
-                value={post.authorEmail}
-                onChange={(event) => setPost({ ...post, authorEmail: event.target.value })}
-                disabled // Disable editing the author name directly
-            />
-            <TextInput
-                label="Tags"
-                value={post.tags}
-                onChange={(event) => setPost({ ...post, tags: event.target.value })}
-            />
+            {/* Add other input fields as needed */}
             <Button onClick={handleUpdateClick}>Update</Button>
         </Container>
     );
