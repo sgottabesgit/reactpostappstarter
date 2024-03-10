@@ -3,6 +3,8 @@ import axios from "axios";
 import { Container, Text, Button } from "@mantine/core";
 import useBoundStore from "../../store/Store"; // Adjust the path accordingly
 import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+
 
 import { jsxDEV as _jsxDEV } from "react/jsx-dev-runtime";
 
