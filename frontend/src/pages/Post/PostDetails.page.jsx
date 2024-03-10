@@ -1,11 +1,17 @@
-import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Container, Text, Button } from "@mantine/core";
+import useBoundStore from "../../store/Store"; // Adjust the path accordingly
+import { useNavigate } from 'react-router-dom';
+
+import { jsxDEV as _jsxDEV } from "react/jsx-dev-runtime";
+
 
 function PostDetailsPage() {
   const { id } = useParams();
   const [post, setPost] = useState(null);
+  const history = useNavigate();
+  const { user } = useBoundStore();
 
   useEffect(() => {
     const fetchPostDetails = async () => {
@@ -20,23 +26,27 @@ function PostDetailsPage() {
     fetchPostDetails();
   }, [id]);
 
+  const handleEditClick = () => {
+    history.push(`/posts/${id}/edit`);
+  };
+
+  const renderPostDetails = () => {
+    return (
+      <div>
+        <h2>{post.title}</h2>
+        <p>{post.content}</p>
+        {/* Add more details as needed */}
+      </div>
+    );
+  };
+
   return (
     <Container>
+      {user && post?.userId === user.id ? (
+        <Button onClick={handleEditClick}>Edit</Button>
+      ) : null}
       {post ? (
-        <>
-          <div>
-            <Text>Author: {post.userId}</Text>
-            <Text>Title: {post.title}</Text>
-            <Text>Category: {post.category}</Text>
-            <Text>Content: {post.content}</Text>
-          </div>
-          <div>
-            <img src={post.image} alt="Post" style={{ width: "100%" }} />
-          </div>
-          <Button>
-            <Link to="/posts">Back to Posts</Link>
-          </Button>
-        </>
+        renderPostDetails()
       ) : (
         <p>Loading...</p>
       )}
@@ -45,7 +55,9 @@ function PostDetailsPage() {
 }
 
 export const postDetailsLoader = async ({ params }) => {
-  return null;
+  const id = params.id;
+  const response = await axios.get(`http://localhost:8085/api/posts/${id}`);
+  return response.data;
 };
 
 export default PostDetailsPage;

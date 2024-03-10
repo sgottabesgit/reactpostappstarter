@@ -1,22 +1,25 @@
 // src/pages/Post/EditPost.page.jsx
 
-import React, { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Container, Input, Textarea, Button } from '@mantine/core';
+import { Container, TextInput, Button } from '@mantine/core';
 
 function EditPostPage() {
     const { id } = useParams();
-    const [post, setPost] = useState(null);
-    const [updatedContent, setUpdatedContent] = useState('');
-    const history = useHistory();
+    const history = useNavigate();
+    const [post, setPost] = useState({
+        title: '',
+        category: '',
+        content: '',
+        // Add other fields as needed
+    });
 
     useEffect(() => {
         const fetchPostDetails = async () => {
             try {
                 const response = await axios.get(`http://localhost:8085/api/posts/${id}`);
                 setPost(response.data);
-                setUpdatedContent(response.data.content);
             } catch (error) {
                 console.error('Error fetching post details:', error);
             }
@@ -26,35 +29,26 @@ function EditPostPage() {
     }, [id]);
 
     const handleUpdateClick = async () => {
-        // Update the post content
-        await axios.put(`http://localhost:8085/api/posts/${id}`, { content: updatedContent });
-        // Redirect back to the post details page
-        history.push(`/posts/${id}`);
+        try {
+            // Add logic to update the post
+            await axios.put(`http://localhost:8085/api/posts/${id}`, post);
+            history.push(`/posts/${id}`);
+        } catch (error) {
+            console.error('Error updating post:', error);
+        }
     };
 
     return (
         <Container>
-            {post ? (
-                <>
-                    <div>
-                        <Textarea
-                            value={updatedContent}
-                            onChange={(event) => setUpdatedContent(event.target.value)}
-                        />
-                    </div>
-                    <Button onClick={handleUpdateClick}>Update</Button>
-                </>
-            ) : (
-                <p>Loading...</p>
-            )}
+            <TextInput
+                label="Title"
+                value={post.title}
+                onChange={(event) => setPost({ ...post, title: event.target.value })}
+            />
+            {/* Add other input fields for category, content, etc. */}
+            <Button onClick={handleUpdateClick}>Update</Button>
         </Container>
     );
 }
-
-export const editPostLoader = async ({ params }) => {
-    const postId = params.id;
-    const response = await axios.get(`http://localhost:8085/api/posts/${postId}`);
-    return response.data;
-};
 
 export default EditPostPage;
