@@ -47,33 +47,39 @@ app.get("/api/posts", async (req, res) => {
   res.json(posts);
 });
 
-// ⭐️ TODO: Implement this yourself
 app.get("/api/posts/:id", (req, res) => {
   const id = req.params.id;
   const post = posts.find((post) => post.id === parseInt(id));
 
   if (!post) {
-    // Handle the case where the requested post ID is not found
     res.status(404).json({ error: "Post not found" });
   } else {
     res.json(post);
   }
 });
 
-/**
- * Problems with this:
- * (1) Authorization Issues:
- *     What if you make a request to this route WITHOUT a token?
- *     What if you make a request to this route WITH a token but
- *     it's invalid/expired?
- * (2) Server-Side Validation Issues:
- *     What if you make a request to this route with a valid token but
- *     with an empty/incorrect payload (post)
- */
 app.post("/api/posts", (req, res) => {
   const incomingPost = req.body;
-  addPost(incomingPost);
-  res.status(200).json({ success: true });
+
+  // Extract user ID from the token
+  const authHeader = req.headers.authorization;
+  const token = parseToken(authHeader, res);
+
+  if (!token) {
+    res.status(401).json({ error: "Unauthorized" });
+    return;
+  }
+
+  try {
+    const decodedUser = jwt.verify(token, "secret");
+    const userId = (decodedUser as IDecodedUser).id;
+
+    // Now you have the user ID, you can use it to add the post
+    addPost(incomingPost, userId);
+    res.status(200).json({ success: true });
+  } catch (error) {
+    res.status(401).json({ error: "Invalid token" });
+  }
 });
 
 app.listen(port, () => console.log("Server is running"));
