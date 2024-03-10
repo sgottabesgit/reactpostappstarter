@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Container, TextInput, Button } from '@mantine/core';
+import { Container, TextInput, Button, Textarea } from '@mantine/core';
 
 function EditPostPage() {
     const { id } = useParams();
@@ -13,6 +13,8 @@ function EditPostPage() {
         category: '',
         content: '',
         // Add other fields as needed
+        author: '',
+        tags: '',
     });
 
     useEffect(() => {
@@ -30,9 +32,11 @@ function EditPostPage() {
 
     const handleUpdateClick = async () => {
         try {
-            // Add logic to update the post
+            // Optimistically update the local state
+            navigate(`/posts/${id}`);
+
+            // Make the API call to update the post
             await axios.put(`http://localhost:8085/api/posts/${id}`, post);
-            navigate.push(`/posts/${id}`);
         } catch (error) {
             console.error('Error updating post:', error);
         }
@@ -45,7 +49,23 @@ function EditPostPage() {
                 value={post.title}
                 onChange={(event) => setPost({ ...post, title: event.target.value })}
             />
-            {/* Add other input fields for category, content, etc. */}
+            <TextInput
+                label="Category"
+                value={post.category}
+                onChange={(event) => setPost({ ...post, category: event.target.value })}
+            />
+            <Textarea
+                label="Content"
+                value={post.content}
+                onChange={(event) => setPost({ ...post, content: event.target.value })}
+            />
+            {/* Add other input fields for author, tags, etc. */}
+            <TextInput
+                label="Author"
+                value={post.author}
+                onChange={(event) => setPost({ ...post, author: event.target.value })}
+            />
+
             <Button onClick={handleUpdateClick}>Update</Button>
         </Container>
     );
