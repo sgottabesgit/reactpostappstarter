@@ -49,7 +49,9 @@ export const verifyUser = (email: string, password: string) => {
 export const findUserById = (id: number) => {
   const user = users.find((user) => user.id === id);
   if (!user) throw new Error("User not found");
-  return user;
+  // Truncate the email by removing everything after the @ sign
+  const truncatedEmail = user.email.split('@')[0];
+  return { ...user, truncatedEmail };
 };
 
 export const parseToken = (authHeader: string | undefined, res: Response) => {

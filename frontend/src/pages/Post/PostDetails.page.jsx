@@ -36,16 +36,12 @@ function PostDetailsPage() {
     return (
       <div>
         <h2>{post.title}</h2>
-        <p>{post.userId}</p>
-
+        <p>{post.authorEmail}</p> {/* Use the truncated email field */}
         <p>{post.category}</p>
-
         <p>{post.content}</p>
-
         <div>
           <img src={post.image} alt="Post" style={{ width: "100%" }} />
         </div>
-
         {/* Add more details as needed */}
       </div>
     );

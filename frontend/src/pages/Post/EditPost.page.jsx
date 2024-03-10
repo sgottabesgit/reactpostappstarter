@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Container, TextInput, Button, Textarea } from '@mantine/core';
+import { Container, TextInput, Button } from '@mantine/core';
 
 function EditPostPage() {
     const { id } = useParams();
@@ -12,8 +12,7 @@ function EditPostPage() {
         title: '',
         category: '',
         content: '',
-        // Add other fields as needed
-        author: '',
+        authorEmail: '', // Assuming this currently holds the author's email
         tags: '',
     });
 
@@ -21,7 +20,11 @@ function EditPostPage() {
         const fetchPostDetails = async () => {
             try {
                 const response = await axios.get(`http://localhost:8085/api/posts/${id}`);
-                setPost(response.data);
+                const truncatedEmail = response.data.authorEmail.split('@')[0]; // Extract name before '@'
+                setPost({
+                    ...response.data,
+                    authorEmail: truncatedEmail,
+                });
             } catch (error) {
                 console.error('Error fetching post details:', error);
             }
@@ -32,11 +35,9 @@ function EditPostPage() {
 
     const handleUpdateClick = async () => {
         try {
-            // Optimistically update the local state
-            navigate(`/posts/${id}`);
-
-            // Make the API call to update the post
+            // Add logic to update the post
             await axios.put(`http://localhost:8085/api/posts/${id}`, post);
+            navigate(`/posts/${id}`);
         } catch (error) {
             console.error('Error updating post:', error);
         }
@@ -54,18 +55,22 @@ function EditPostPage() {
                 value={post.category}
                 onChange={(event) => setPost({ ...post, category: event.target.value })}
             />
-            <Textarea
+            <TextInput
                 label="Content"
                 value={post.content}
                 onChange={(event) => setPost({ ...post, content: event.target.value })}
             />
-            {/* Add other input fields for author, tags, etc. */}
             <TextInput
                 label="Author"
-                value={post.author}
-                onChange={(event) => setPost({ ...post, author: event.target.value })}
+                value={post.authorEmail}
+                onChange={(event) => setPost({ ...post, authorEmail: event.target.value })}
+                disabled // Disable editing the author name directly
             />
-
+            <TextInput
+                label="Tags"
+                value={post.tags}
+                onChange={(event) => setPost({ ...post, tags: event.target.value })}
+            />
             <Button onClick={handleUpdateClick}>Update</Button>
         </Container>
     );
