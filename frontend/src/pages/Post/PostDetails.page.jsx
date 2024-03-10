@@ -12,7 +12,7 @@ import { jsxDEV as _jsxDEV } from "react/jsx-dev-runtime";
 function PostDetailsPage() {
   const { id } = useParams();
   const [post, setPost] = useState(null);
-  const history = useNavigate();
+  const navigate = useNavigate();
   const { user } = useBoundStore();
 
   useEffect(() => {
@@ -29,7 +29,7 @@ function PostDetailsPage() {
   }, [id]);
 
   const handleEditClick = () => {
-    history.push(`/posts/${id}/edit`);
+    navigate(`/posts/${id}/edit`);
   };
 
   const renderPostDetails = () => {

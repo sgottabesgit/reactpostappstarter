@@ -7,7 +7,7 @@ import { Container, TextInput, Button } from '@mantine/core';
 
 function EditPostPage() {
     const { id } = useParams();
-    const history = useNavigate();
+    const navigate = useNavigate();
     const [post, setPost] = useState({
         title: '',
         category: '',
@@ -32,7 +32,7 @@ function EditPostPage() {
         try {
             // Add logic to update the post
             await axios.put(`http://localhost:8085/api/posts/${id}`, post);
-            history.push(`/posts/${id}`);
+            navigate.push(`/posts/${id}`);
         } catch (error) {
             console.error('Error updating post:', error);
         }
