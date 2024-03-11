@@ -7,6 +7,7 @@ import useBoundStore from "../../store/Store"; // Adjust the path accordingly
 function EditPostPage() {
     const { id } = useParams();
     const [post, setPost] = useState(null);
+    const [updatedImage, setUpdatedImage] = useState(""); // New state for updated image URL
     const navigate = useNavigate();
     const { user } = useBoundStore();
 
@@ -15,6 +16,8 @@ function EditPostPage() {
             try {
                 const response = await axios.get(`http://localhost:8085/api/posts/${id}`);
                 setPost(response.data);
+                // Set initial value for the updated image URL
+                setUpdatedImage(response.data.image);
             } catch (error) {
                 console.error("Error fetching post details:", error);
             }
@@ -30,13 +33,14 @@ function EditPostPage() {
                 title: document.getElementById("title").value,
                 category: document.getElementById("category").value,
                 content: document.getElementById("content").value,
+                image: updatedImage, // Include the updated image URL
                 // Add more fields as needed
             };
 
             // Send a PUT request to update the post
             await axios.put(`http://localhost:8085/api/posts/${id}`, updatedPostData);
 
-            // Optionally, you can navigate the user to the post details page after successful update
+            // Optionally, you can navigate the user to the post details page after a successful update
             navigate(`/posts/${id}`);
         } catch (error) {
             console.error("Error updating post:", error);
@@ -50,13 +54,17 @@ function EditPostPage() {
                 <TextInput id="authorEmail" label="Author Email" defaultValue={post.authorEmail} disabled />
                 <TextInput id="category" label="Category" defaultValue={post.category} />
                 <Textarea id="content" label="Content" defaultValue={post.content} />
+                <TextInput
+                    id="image"
+                    label="Image URL"
+                    value={updatedImage}
+                    onChange={(event) => setUpdatedImage(event.target.value)}
+                />
                 {/* Add more form fields as needed */}
                 <Button onClick={handleUpdateClick}>Update</Button>
             </div>
         );
     };
-
-
 
     return (
         <Container>
