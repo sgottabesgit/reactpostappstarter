@@ -37,6 +37,13 @@ export const posts = [
 export const addPost = (post: any, userId: number) => {
   post.id = posts.length + 1;
   post.userId = userId;
+
+  // Fetch user details based on userId
+  const user = findUserById(userId);
+
+  // Set authorEmail in the post
+  post.authorEmail = user.email;  // This assumes that user.email is available
+
   posts.push(post);
 };
 

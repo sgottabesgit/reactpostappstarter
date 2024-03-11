@@ -30,12 +30,19 @@ function PostDetailsPage() {
   };
 
   const renderPostDetails = () => {
+    if (!post) {
+      return <p>Loading...</p>;
+    }
+
+    // Check if 'authorEmail' property is present in the 'post' object
+    const truncatedAuthor = post.authorEmail ? post.authorEmail.split('@')[0] : 'Unknown Author';
+
     return (
       <div className="PostDetailsContainer">
         {/* Left Section */}
         <div className="LeftSection">
           <h2>{post.title}</h2>
-          <p><strong>Author:</strong> {post.authorEmail}</p>
+          <p><strong>Author:</strong> {truncatedAuthor}</p>
           <p><strong>Category:</strong> {post.category}</p>
           <p><strong>Content:</strong> {post.content}</p>
           {user && post?.userId === user.id ? (
@@ -51,6 +58,7 @@ function PostDetailsPage() {
       </div>
     );
   };
+
 
   return (
     <Container>
