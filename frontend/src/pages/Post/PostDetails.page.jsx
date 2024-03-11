@@ -1,10 +1,8 @@
-// frontend/src/pages/Post/PostDetails.page.jsx
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Container, Text, Button } from "@mantine/core";
 import useBoundStore from "../../store/Store";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import './PostDetails.css'; // Import the CSS file
 
@@ -56,6 +54,11 @@ function PostDetailsPage() {
 
   return (
     <Container>
+      {/* Back Button */}
+      <Button style={{ marginBottom: '10px' }}>
+        <Link to="/posts">Back to Posts</Link>
+      </Button>
+
       {post ? (
         renderPostDetails()
       ) : (
