@@ -13,8 +13,7 @@ import {
 import { PostPage, postsLoader } from "./pages/Post/Post.page";
 import { postDetailsLoader } from "./pages/Post/PostDetails.page";
 import PostDetailsPage from "./pages/Post/PostDetails.page";
-import EditPostPage from "./pages/Post/EditPost.page";  // Add this import
-
+import EditPostPage from "./pages/Post/EditPost.page";
 
 export const Router = () => {
   const authCheck = useBoundStore((state) => {
@@ -32,6 +31,7 @@ export const Router = () => {
    * /posts - See All Posts
    * /posts/:id - See details of a specific post
    * /posts/create - Create a post
+   * /posts/:id/edit - Edit a post
    *
    * /<unknown> - 404 Not Found
    */

@@ -1,19 +1,14 @@
-// src/pages/Post/EditPost.page.jsx
-
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { Container, TextInput, Textarea, Button } from '@mantine/core';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Container, Text, Button, TextInput, Textarea } from "@mantine/core";
+import { useNavigate, useParams } from 'react-router-dom';
+import useBoundStore from "../../store/Store"; // Adjust the path accordingly
 
 function EditPostPage() {
     const { id } = useParams();
+    const [post, setPost] = useState(null);
     const navigate = useNavigate();
-    const [post, setPost] = useState({
-        title: '',
-        category: '',
-        content: '',
-        // Add other fields as needed
-    });
+    const { user } = useBoundStore();
 
     useEffect(() => {
         const fetchPostDetails = async () => {
@@ -21,7 +16,7 @@ function EditPostPage() {
                 const response = await axios.get(`http://localhost:8085/api/posts/${id}`);
                 setPost(response.data);
             } catch (error) {
-                console.error('Error fetching post details:', error);
+                console.error("Error fetching post details:", error);
             }
         };
 
@@ -30,35 +25,54 @@ function EditPostPage() {
 
     const handleUpdateClick = async () => {
         try {
-            // Add logic to update the post
-            await axios.put(`http://localhost:8085/api/posts/${id}`, post);
+            // Gather updated post data from form fields
+            const updatedPostData = {
+                title: document.getElementById("title").value,
+                category: document.getElementById("category").value,
+                content: document.getElementById("content").value,
+                // Add more fields as needed
+            };
+
+            // Send a PUT request to update the post
+            await axios.put(`http://localhost:8085/api/posts/${id}`, updatedPostData);
+
+            // Optionally, you can navigate the user to the post details page after successful update
             navigate(`/posts/${id}`);
         } catch (error) {
-            console.error('Error updating post:', error);
+            console.error("Error updating post:", error);
         }
     };
 
+    const renderEditForm = () => {
+        return (
+            <div>
+                <TextInput id="title" label="Title" defaultValue={post.title} />
+                <TextInput id="authorEmail" label="Author Email" defaultValue={post.authorEmail} disabled />
+                <TextInput id="category" label="Category" defaultValue={post.category} />
+                <Textarea id="content" label="Content" defaultValue={post.content} />
+                {/* Add more form fields as needed */}
+                <Button onClick={handleUpdateClick}>Update</Button>
+            </div>
+        );
+    };
+
+
+
     return (
         <Container>
-            <TextInput
-                label="Title"
-                value={post.title}
-                onChange={(event) => setPost({ ...post, title: event.target.value })}
-            />
-            <TextInput
-                label="Category"
-                value={post.category}
-                onChange={(event) => setPost({ ...post, category: event.target.value })}
-            />
-            <Textarea
-                label="Content"
-                value={post.content}
-                onChange={(event) => setPost({ ...post, content: event.target.value })}
-            />
-            {/* Add other input fields as needed */}
-            <Button onClick={handleUpdateClick}>Update</Button>
+            {user && post?.userId === user.id ? (
+                renderEditForm()
+            ) : (
+                <p>Loading...</p>
+            )}
         </Container>
     );
 }
+
+export const editPostLoader = async ({ params }) => {
+    const id = params.id;
+    const response = await axios.get(`http://localhost:8085/api/posts/${id}`);
+    return response.data;
+};
 
 export default EditPostPage;

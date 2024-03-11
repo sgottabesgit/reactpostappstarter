@@ -10,7 +10,6 @@ import {
   parseToken,
   addPost,
   posts,
-  sleep,
 } from "./fakedb";
 
 const port = 8085;
@@ -75,6 +74,33 @@ app.post("/api/posts", (req, res) => {
   const { userId } = tokenAndUserId;
   addPost(incomingPost, userId);
   res.status(200).json({ success: true });
+});
+
+app.put("/api/posts/:id", (req, res) => {
+  try {
+    const id = req.params.id;
+    const tokenAndUserId = parseToken(req.headers.authorization, res);
+
+    if (!tokenAndUserId) {
+      return;
+    }
+
+    const { userId } = tokenAndUserId;
+    const user = findUserById(userId);
+
+    const existingPostIndex = posts.findIndex((post) => post.id === parseInt(id));
+
+    if (existingPostIndex === -1) {
+      res.status(404).json({ error: "Post not found" });
+    } else {
+      const updatedPost = { ...posts[existingPostIndex], ...req.body };
+      posts[existingPostIndex] = updatedPost;
+
+      res.json({ success: true, updatedPost });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 app.listen(port, () => console.log("Server is running"));
