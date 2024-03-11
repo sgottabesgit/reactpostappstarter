@@ -1,13 +1,11 @@
+// frontend/src/pages/Post/PostDetails.page.jsx
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Container, Text, Button } from "@mantine/core";
-import useBoundStore from "../../store/Store"; // Adjust the path accordingly
+import useBoundStore from "../../store/Store";
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-
-
-import { jsxDEV as _jsxDEV } from "react/jsx-dev-runtime";
-
 
 function PostDetailsPage() {
   const { id } = useParams();
@@ -36,13 +34,13 @@ function PostDetailsPage() {
     return (
       <div>
         <h2>{post.title}</h2>
-        <p>{post.authorEmail}</p> {/* Use the truncated email field */}
-        <p>{post.category}</p>
-        <p>{post.content}</p>
+        <p><strong>Author:</strong> {post.authorEmail}</p>
+        <p><strong>Category:</strong> {post.category}</p>
+        <p><strong>Content:</strong> {post.content}</p>
+        <p><strong>Image:</strong></p>
         <div>
           <img src={post.image} alt="Post" style={{ width: "100%" }} />
         </div>
-        {/* Add more details as needed */}
       </div>
     );
   };
