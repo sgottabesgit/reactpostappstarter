@@ -1,16 +1,14 @@
-.post-details-container {
+/* frontend/src/pages/Post/PostDetails.css */
+
+.PostDetailsContainer {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
 }
 
-.post-details-left {
-    flex: 1;
+.LeftSection {
+    flex: 2;
     margin-right: 20px;
-    /* Adjust margin as needed */
 }
 
-.post-image {
-    max-width: 100%;
-    height: auto;
+.RightSection {
+    flex: 1;
 }

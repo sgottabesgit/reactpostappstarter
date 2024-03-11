@@ -6,6 +6,7 @@ import { Container, Text, Button } from "@mantine/core";
 import useBoundStore from "../../store/Store";
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import './PostDetails.css'; // Import the CSS file
 
 function PostDetailsPage() {
   const { id } = useParams();
@@ -32,13 +33,21 @@ function PostDetailsPage() {
 
   const renderPostDetails = () => {
     return (
-      <div>
-        <h2>{post.title}</h2>
-        <p><strong>Author:</strong> {post.authorEmail}</p>
-        <p><strong>Category:</strong> {post.category}</p>
-        <p><strong>Content:</strong> {post.content}</p>
-        <p><strong>Image:</strong></p>
-        <div>
+      <div className="PostDetailsContainer">
+        {/* Left Section */}
+        <div className="LeftSection">
+          <h2>{post.title}</h2>
+          <p><strong>Author:</strong> {post.authorEmail}</p>
+          <p><strong>Category:</strong> {post.category}</p>
+          <p><strong>Content:</strong> {post.content}</p>
+          {user && post?.userId === user.id ? (
+            <Button onClick={handleEditClick}>Edit</Button>
+          ) : null}
+        </div>
+
+        {/* Right Section */}
+        <div className="RightSection">
+          <p><strong>Image:</strong></p>
           <img src={post.image} alt="Post" style={{ width: "100%" }} />
         </div>
       </div>
@@ -47,9 +56,6 @@ function PostDetailsPage() {
 
   return (
     <Container>
-      {user && post?.userId === user.id ? (
-        <Button onClick={handleEditClick}>Edit</Button>
-      ) : null}
       {post ? (
         renderPostDetails()
       ) : (
