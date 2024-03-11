@@ -1,7 +1,6 @@
 // FooterSimple.jsx
 import React from 'react';
 import { Container, Group, Anchor } from '@mantine/core';
-import { MantineLogo } from '@mantinex/mantine-logo'; // Assuming this is the correct import path for MantineLogo
 import classes from './FooterSimple.module.css';
 import SVGComponent from "./svgviewer-react-output";
 
