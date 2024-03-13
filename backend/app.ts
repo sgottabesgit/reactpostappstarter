@@ -10,6 +10,7 @@ import {
   parseToken,
   addPost,
   posts,
+  sleep,
 } from "./fakedb";
 
 const port = 8085;
@@ -49,6 +50,7 @@ app.post("/api/user/validation", (req, res) => {
 });
 
 app.get("/api/posts", async (req, res) => {
+  // Sleep delay goes here
   res.json(posts);
 });
 
