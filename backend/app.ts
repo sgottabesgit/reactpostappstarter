@@ -1,6 +1,4 @@
-// backend/app.ts
-
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import {
@@ -18,6 +16,27 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Middleware for authentication
+const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
+  const authHeader = req.headers.authorization;
+  const tokenAndUserId = parseToken(authHeader, res);
+
+  if (!tokenAndUserId) {
+    return;
+  }
+
+  next();
+};
+
+// Middleware for payload validation
+const validatePayload = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.body.title || !req.body.category || !req.body.content) {
+    return res.status(400).json({ error: "Missing required fields in the payload" });
+  }
+
+  next();
+};
+
 app.post("/api/user/login", (req, res) => {
   try {
     const { email, password } = req.body;
@@ -31,7 +50,7 @@ app.post("/api/user/login", (req, res) => {
   }
 });
 
-app.post("/api/user/validation", (req, res) => {
+app.post("/api/user/validation", authenticateToken, (req, res) => {
   try {
     const authHeader = req.headers.authorization;
     const tokenAndUserId = parseToken(authHeader, res);
@@ -68,7 +87,7 @@ app.get("/api/posts/:id", (req, res) => {
   }
 });
 
-app.post("/api/posts", (req, res) => {
+app.post("/api/posts", authenticateToken, validatePayload, (req, res) => {
   const incomingPost = req.body;
   const tokenAndUserId = parseToken(req.headers.authorization, res);
 
@@ -81,7 +100,7 @@ app.post("/api/posts", (req, res) => {
   res.status(200).json({ success: true });
 });
 
-app.put("/api/posts/:id", (req, res) => {
+app.put("/api/posts/:id", authenticateToken, validatePayload, (req, res) => {
   try {
     const id = req.params.id;
     const tokenAndUserId = parseToken(req.headers.authorization, res);
