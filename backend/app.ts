@@ -50,7 +50,10 @@ app.post("/api/user/validation", (req, res) => {
 });
 
 app.get("/api/posts", async (req, res) => {
-  // Sleep delay goes here
+  // Sleep delay for 5 seconds (5000 milliseconds)
+  await sleep(5000); // Adjust the sleep duration as needed
+
+  // Send the posts data after the sleep delay
   res.json(posts);
 });
 
