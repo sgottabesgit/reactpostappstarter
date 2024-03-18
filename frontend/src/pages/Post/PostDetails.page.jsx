@@ -1,3 +1,5 @@
+// PostDetailsPage.jsx
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Container, Text, Button } from "@mantine/core";
@@ -34,15 +36,15 @@ function PostDetailsPage() {
       return <p>Loading...</p>;
     }
 
-    // Check if 'authorEmail' property is present in the 'post' object
-    const truncatedAuthor = post.authorEmail ? post.authorEmail.split('@')[0] : 'Unknown Author';
+    // Check if 'author' property is present in the 'post' object
+    const author = post.author ? post.author : 'Unknown Author';
 
     return (
       <div className="PostDetailsContainer">
         {/* Left Section */}
         <div className="LeftSection">
           <h2>{post.title}</h2>
-          <p><strong>Author:</strong> {truncatedAuthor}</p>
+          <p><strong>Author:</strong> {author}</p> {/* Use 'author' instead of 'truncatedAuthor' */}
           <p><strong>Category:</strong> {post.category}</p>
           <p><strong>Content:</strong> {post.content}</p>
           {user && post?.userId === user.id ? (
