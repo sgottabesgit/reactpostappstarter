@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Container } from "@mantine/core";
+import { SimpleGrid } from "@mantine/core";
+
 import { Carousel } from "@mantine/carousel";
 import { ArticleCardImage } from "../../components/misc/ArticleCardImage";
 import axios from "axios";
@@ -26,12 +28,11 @@ const Landing = () => {
       <Carousel withIndicators height={200}>
         {posts.map((post) => (
           <Carousel.Slide key={post.id}>
-            <ArticleCardImage
-              title={post.title}
-              category={post.category}
-              image={post.image}
-              id={post.id}
-            />
+            <SimpleGrid cols={3}>
+              {posts?.map((post) => (
+                <ArticleCardImage key={post.title} {...post} />
+              ))}
+            </SimpleGrid>
           </Carousel.Slide>
         ))}
       </Carousel>
